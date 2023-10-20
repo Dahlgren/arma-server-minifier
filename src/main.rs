@@ -44,7 +44,7 @@ fn main() {
         3 => {
             let input_folder = Path::new(&args[1]);
             let output_folder = Path::new(&args[2]);
-            let glob_pattern = format!("{}/**/*.pbo", &args[1]);
+            let glob_pattern = format!("{}/**/*", &args[1]);
 
             for entry in glob(glob_pattern.as_str()).expect("Failed to read glob pattern") {
                 match entry {
@@ -52,7 +52,12 @@ fn main() {
                         let file_path = input_path.strip_prefix(Path::new(input_folder)).expect("Not a prefix");
                         let output_path = output_folder.join(file_path);
                         create_dir_all(output_path.parent().expect("no parent")).expect("failed to create folders");
-                        minify_pbo(input_path.as_path(), output_path.as_path());
+
+                        if file_path.ends_with(".pbo") {
+                            minify_pbo(input_path.as_path(), output_path.as_path());
+                        } else {
+                            std::fs::copy(input_path, output_path);
+                        }
                     },
                     Err(e) => println!("{:?}", e),
                 }
