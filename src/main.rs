@@ -53,7 +53,7 @@ fn main() {
                         let output_path = output_folder.join(file_path);
                         create_dir_all(output_path.parent().expect("no parent")).expect("failed to create folders");
 
-                        if file_path.ends_with(".pbo") {
+                        if file_path.extension().map(|s| s == "pbo").unwrap_or(false) {
                             minify_pbo(input_path.as_path(), output_path.as_path());
                         } else {
                             std::fs::copy(input_path, output_path);
